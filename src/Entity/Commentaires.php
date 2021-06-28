@@ -25,7 +25,7 @@ class Commentaires
     /**
      * @ORM\Column(type="boolean")
      */
-    private $actif;
+    private $actif = false;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -40,7 +40,7 @@ class Commentaires
     /**
      * @ORM\Column(type="boolean")
      */
-    private $rgpd;
+    private $rgpd = false;
 
     /**
      * @ORM\Column(type="datetime")
