@@ -2,14 +2,17 @@
 
 namespace App\Entity;
 
-use App\Repository\ArticlesRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ArticlesRepository;
 use Gedmo\Mapping\Annotation as Gedmo;
+use Doctrine\Common\Collections\Collection;
+use Symfony\Component\HttpFoundation\File\File;
+use Doctrine\Common\Collections\ArrayCollection;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=ArticlesRepository::class)
+ * @Vich\Uploadable
  */
 class Articles
 {
@@ -54,8 +57,15 @@ class Articles
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @var string
      */
     private $featured_image;
+
+    /**
+     * @Vich\UploadableField(mapping="images", fileNameProperty="featured_image")
+     * @var File
+     */
+    private $imageFile;  
 
     /**
      * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="articles")
@@ -129,16 +139,30 @@ class Articles
         return $this->updated_at;
     }
 
-    public function getFeaturedImage(): ?string
+    public function getFeaturedImage()
     {
         return $this->featured_image;
     }
 
-    public function setFeaturedImage(string $featured_image): self
+    public function setFeaturedImage($featured_image)
     {
         $this->featured_image = $featured_image;
 
         return $this;
+    }
+
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+    
+        if ($image) {
+            $this->updated_at = new \DateTime('now');
+        }
+    }
+    
+    public function getImageFile()
+    {
+        return $this->imageFile;
     }
 
     public function getUsers(): ?Users
